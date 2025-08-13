@@ -24,7 +24,6 @@ public class Item : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log("Кликнул по объекту");
         if (isInteractive)
         {
             objInteractive.SetActive(true);
