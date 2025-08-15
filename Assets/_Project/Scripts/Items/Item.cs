@@ -1,13 +1,22 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider2D))]
 public class Item : MonoBehaviour
 {
-    [SerializeField, Header("Это интерактивный объект?")]
-    private bool isInteractive = false;
+    [field: SerializeField, Header("Вставить ItemSo")]
+    public ItemSO itemSO { get; private set; }
+
+    private Collider2D col2d;
+
+    private SpriteRenderer spriteRenderer;
 
     [SerializeField, Header("===Если интерактивный, то вставляем всё ниже===")]
     private GameObject objInteractive;
+
+    //Флаг находится ли в инвентаре?
+    private bool isInInventory = false;
+
 
     private void OnEnable()
     {
@@ -15,6 +24,9 @@ public class Item : MonoBehaviour
         {
             objInteractive.SetActive(false);
         }
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        spriteRenderer.sprite = itemSO.SpriteItem;
+        col2d = GetComponent<Collider2D>();
     }
 
     private void Update()
@@ -24,13 +36,21 @@ public class Item : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (isInteractive)
+        if (isInInventory)
         {
-            objInteractive.SetActive(true);
+            DragItem(); //ПУСТОЙ МЕТОД!!!
+            Debug.Log("Заглушка под перемещения ИЗ инвентаря");
         }
         else
         {
-            Destroy(gameObject);
+            if (itemSO.IsInteractive)
+            {
+                objInteractive.SetActive(true);
+            }
+            else
+            {
+                Inventory.Instance.AddItems(itemSO, gameObject);
+            }
         }
     }
 
@@ -45,18 +65,37 @@ public class Item : MonoBehaviour
         }
     }
 
+    private void DragItem()
+    {
+        //Здесь будет логика перемещения объекта
+    }
+
+    public void SetIsInInventory(bool set)
+    {
+        isInInventory = set;
+    }
+
     private void OnValidate()
     {
-        if (isInteractive)
+        if (itemSO != null)
         {
-            if (objInteractive == null)
+            if (itemSO.IsInteractive)
             {
-                Debug.LogError($"[Item,Validate]Нет интерактивной панели для интерактивного объекта!{gameObject.name}");
+                if (objInteractive == null)
+                {
+                    Debug.LogError($"[Item,Validate]Нет интерактивной панели для интерактивного объекта!{gameObject.name}");
+                }
+            }
+            else
+            {
+                objInteractive = null;
             }
         }
-        else
+
+        if (this.gameObject.activeSelf && itemSO == null)
         {
-            objInteractive = null;
+            Debug.LogError($"[Item,Validate] Не назначен ItemSO в {gameObject.name}!");
         }
+
     }
 }
