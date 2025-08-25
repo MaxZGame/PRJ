@@ -11,10 +11,10 @@ public class MG_ButerGameManager : MonoBehaviour
     //Это счетчик плохих выборов
     private int badChoices = 0;
 
-    [SerializeField, Header("Сколько негативных выборов нужно для поражения?"), Range(1, 10)]
+    [SerializeField, Header("Сколько негативных выборов нужно для поражения?"), Range(1, 3)]
     private int badChoicesForBadFinal = 2;
 
-    [SerializeField, Header("Сколько cекунд проигрывается анимация?"), Range(1, 10)]
+    [SerializeField, Header("Сколько cекунд проигрывается анимация конца мини-игры?"), Range(1, 10)]
     private float timeAnimation = 5f;
 
     [SerializeField, Header("Вставьте объект с хорошим финалом")]
@@ -90,6 +90,7 @@ public class MG_ButerGameManager : MonoBehaviour
     {
         MG_ButterPanelManager.Instance.goAllFinals.SetActive(true);
         final.SetActive(true);
+        buttonBack.gameObject.SetActive(false);
         yield return new WaitForSeconds(timeAnimation);
         final.SetActive(false);
         if (isBadFinal)
