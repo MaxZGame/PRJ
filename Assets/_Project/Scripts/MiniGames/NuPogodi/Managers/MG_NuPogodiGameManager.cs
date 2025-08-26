@@ -22,6 +22,9 @@ public class MG_NuPogodiGameManager : MonoBehaviour
     [SerializeField, Header("Вставить кнопку запуска мини-игры")]
     private GameObject goActivatedMG;
 
+    [SerializeField, Header("Вставить аудио-менеджер мини-игры")]
+    private MG_NuPogodi_AudioManager MG_NuPogodi_AudioManager;
+
     private void Awake()
     {
         Instance = this;
@@ -61,6 +64,7 @@ public class MG_NuPogodiGameManager : MonoBehaviour
         }
         else // В случае победы
         {
+            SFX_Main.Instance.PlayAudio("WinGame"); //Звук победы
             doneEggCount = 0;
             Image[] doneEggs = panelDoneEgg.GetComponentsInChildren<Image>();
             foreach (Image image in doneEggs)
@@ -80,6 +84,7 @@ public class MG_NuPogodiGameManager : MonoBehaviour
     {
         if (Wolf.Health == 0)
         {
+            SFX_Main.Instance.PlayAudio("GameOver"); //Звук проигрыша
             buttonBack.Back();
             Destroy(gameObject);
             Destroy(goActivatedMG);
@@ -91,6 +96,10 @@ public class MG_NuPogodiGameManager : MonoBehaviour
         if (Wolf == null)
         {
             Debug.LogError($"На {this} не назначен Wolf");
+        }
+        if (MG_NuPogodi_AudioManager == null)
+        {
+            Debug.LogError($"На {this} не назначен MG_NuPogodi_AudioManager");
         }
     }
 }

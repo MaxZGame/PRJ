@@ -48,6 +48,7 @@ public class MControl_Wolf : MonoBehaviour
                 {
                     gameObject.transform.position = leftDPos;
                 }
+                MG_NuPogodi_AudioManager.Instance.PlayOneShotAudio("FootStep");
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
@@ -59,6 +60,7 @@ public class MControl_Wolf : MonoBehaviour
                 {
                     gameObject.transform.position = rightDPos;
                 }
+                MG_NuPogodi_AudioManager.Instance.PlayOneShotAudio("FootStep");
             }
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -70,6 +72,7 @@ public class MControl_Wolf : MonoBehaviour
                 {
                     gameObject.transform.position = leftUPos;
                 }
+                MG_NuPogodi_AudioManager.Instance.PlayOneShotAudio("FootStep");
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
@@ -81,6 +84,7 @@ public class MControl_Wolf : MonoBehaviour
                 {
                     gameObject.transform.position = leftDPos;
                 }
+                MG_NuPogodi_AudioManager.Instance.PlayOneShotAudio("FootStep");
             }
         }
     }

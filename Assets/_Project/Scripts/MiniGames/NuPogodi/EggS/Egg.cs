@@ -9,11 +9,13 @@ public class Egg : MonoBehaviour
         if (collision.gameObject.tag == "Wolf")
         {
             MG_NuPogodiGameManager.Instance.CollectEgg();
+            MG_NuPogodi_AudioManager.Instance.PlayOneShotAudio("CollectEgg");
             Destroy(gameObject);
         }
         if (collision.gameObject.tag == "EndTrigger")
         {
             MG_NuPogodiActionManager.OnDamageWolf?.Invoke(damage);
+            MG_NuPogodi_AudioManager.Instance.PlayOneShotAudio("DamageEgg");
             Destroy(gameObject);
         }
     }

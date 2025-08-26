@@ -24,6 +24,7 @@ public class Food : MonoBehaviour
 
     public void Choice(string numChoice)
     {
+        SFX_Main.Instance.PlayAudio("Select"); //Звук при активации выбора
         MG_ButerGameManager.Instance.AddChoice(FoodSO.IsGood);
         MG_ButterPanelManager.Instance.NextPanel(numChoice);
     }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
+[RequireComponent(typeof(Inventory_UI))]
+[RequireComponent(typeof(Inventory_Sound))]
 public class Inventory : MonoBehaviour
 {
     public static Inventory Instance;
@@ -35,7 +35,15 @@ public class Inventory : MonoBehaviour
     [SerializeField, Header("Вставьте кнопку активации инвентаря")]
     private ActivatedInventoryButton activatedInventoryButton;
 
+    private Inventory_Sound inventory_Sound; //Звуковой скрипт инвентаря
 
+
+    //Флаг, если переходим в другую комнату
+    [HideInInspector]
+    public bool isNextRoomStep = false;
+
+    //Скрипт, который отвечает за управление интерфейсом инвентаря
+    private Inventory_UI inventory_UI;
 
     private void Awake()
     {
@@ -71,12 +79,15 @@ public class Inventory : MonoBehaviour
                 objItem.SetActive(true);
                 objItem.transform.position = posItemsDIC[itemSO.NameItem];
             }
+
+            inventory_Sound.PlayAddItem(); //Звук добавления предмета
         }
         else
         {
-            Debug.Log("Больше не влезает!");
+            inventory_Sound.PlayAudio("FullInventory");
         }
 
+        inventory_UI.UpdateCount(inventoryItemsDIC.Count, maxItemsInInventory); //Обновляем UI отображение количества предметов
     }
 
     public void RemoveItems(ItemSO itemSO, Item itemScript, GameObject objItem)
@@ -101,6 +112,7 @@ public class Inventory : MonoBehaviour
         inventoryItemsDIC.Remove(itemSO.NameItem);
         posItemsDIC.Remove(itemSO.NameItem);
 
+        inventory_UI.UpdateCount(inventoryItemsDIC.Count, maxItemsInInventory); //Обновляем UI отображение количества предметов
         Debug.Log($"[Inventory,RemoveIitems] Индекс предмета в инвентаре {itemScript.IndexItem}");
     }
 
@@ -118,6 +130,10 @@ public class Inventory : MonoBehaviour
             item.transform.position = pos;
             item.SetActive(true);
         }
+        if (!isNextRoomStep)
+        {
+            inventory_Sound.PlayAudio("OpenClose"); // Звук открытия,закрытия инвентаря
+        }
     }
 
     public void OnDisableInventory()
@@ -129,6 +145,10 @@ public class Inventory : MonoBehaviour
             item.SetActive(false);
             item.transform.position = posPointBegin;
             activatedInventoryButton.SetActivated(false);
+        }
+        if (!isNextRoomStep)
+        {
+            inventory_Sound.PlayAudio("OpenClose"); // Звук открытия,закрытия инвентаря
         }
     }
 
@@ -182,6 +202,9 @@ public class Inventory : MonoBehaviour
             Debug.LogError($"Слотов меньше, чем указанное максимальное количество предметов!");
         }
         posPointBegin = transformPointBegin.transform.position;
+        inventory_Sound = GetComponent<Inventory_Sound>();
+        inventory_UI = GetComponent<Inventory_UI>();
+        inventory_UI.UpdateCount(inventoryItemsDIC.Count, maxItemsInInventory); //Обновляем UI отображение количества предметов
     }
 
     private void OnValidate()

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider2D))]
 public class Item : MonoBehaviour
@@ -124,7 +123,11 @@ public class Item : MonoBehaviour
 
     private void DragItemUp()
     {
-        isDragging = false;
+        if (isDragging)
+        {
+            Inventory_Sound.Instance.PlayRemoveItem();
+            isDragging = false;
+        }
     }
 
     public void SetIsInInventory(bool set, int index)

@@ -18,5 +18,6 @@ public class MGNuPogodiButtonBack : MonoBehaviour
         {
             obj?.SetActive(false);
         }
+        SFX_Main.Instance.PlayAudio("Select"); //Звук при нажатии на эту клавишу
     }
 }
