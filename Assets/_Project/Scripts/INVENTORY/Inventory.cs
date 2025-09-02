@@ -20,6 +20,13 @@ public class Inventory : MonoBehaviour
 
     [SerializeField, Header("Укажите максимальное количество предметов в инвентаре"), Range(1, 9)]
     private int maxItemsInInventory = 5;
+    [SerializeField, Header("Укажите за какое время предметы вылезают из инвентаря"), Range(0f, 2f)]
+    private float timeSpeedItem = 0.5f;
+
+
+    [SerializeField, Header("Укажите насколько увеличивается инвентарь при открытии"), Range(1, 4)]
+    private float scaleInventoryOpen = 2;
+    private Vector3 beginScale; //Начальный размер кнопки инвентаря
 
     [SerializeField, Header("Вставьте начальную позицию предмета в инвентаре")]
     private Transform transformPointBegin;
@@ -31,6 +38,12 @@ public class Inventory : MonoBehaviour
     //Объект, который будет родительским при удалении из инвентаря
     private GameObject oldParentItems;
 
+
+    [SerializeField, Header("Вставьте объект визуала инвентаря")]
+    private GameObject objInventory;
+
+    [SerializeField, Header("Вставьте позицию инвентаря")]
+    private Transform transformInventory;
 
     [SerializeField, Header("Вставьте кнопку активации инвентаря")]
     private ActivatedInventoryButton activatedInventoryButton;
@@ -48,7 +61,6 @@ public class Inventory : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        Init();
     }
 
     public void AddItems(ItemSO itemSO, GameObject objItem)
@@ -118,6 +130,12 @@ public class Inventory : MonoBehaviour
 
     public void OnEnableInventory()
     {
+        //Меняем размер инвентаря
+        objInventory.transform.position = posPointBegin;
+        RectTransform rectTransform = objInventory.GetComponent<RectTransform>();
+        rectTransform.localScale = new Vector3(scaleInventoryOpen, scaleInventoryOpen, scaleInventoryOpen);
+        //Закончили
+
         foreach (var kvp in inventoryItemsDIC)
         {
             string key = kvp.Key;
@@ -127,7 +145,7 @@ public class Inventory : MonoBehaviour
                 Debug.LogWarning($"[Inventory] Нет позиции для ключа: {key}");
                 continue;
             }
-            item.transform.position = pos;
+            StartCoroutine(MoveWithLerp.Instance.Move(item.transform, pos, timeSpeedItem)); //Плавно расставляем предметы по слотам
             item.SetActive(true);
         }
         if (!isNextRoomStep)
@@ -138,6 +156,12 @@ public class Inventory : MonoBehaviour
 
     public void OnDisableInventory()
     {
+        //Меняем размер инвентаря
+        objInventory.transform.position = transformInventory.position;
+        RectTransform rectTransform = objInventory.GetComponent<RectTransform>();
+        rectTransform.localScale = beginScale;
+        //Закончили
+
         foreach (var kvp in inventoryItemsDIC)
         {
             string key = kvp.Key;
@@ -191,7 +215,7 @@ public class Inventory : MonoBehaviour
 
     }
 
-    private void Init()
+    public void Init() //Метод инициализации
     {
         for (int i = 0; i < transformsSlots.Length; i++)
         {
@@ -202,16 +226,32 @@ public class Inventory : MonoBehaviour
             Debug.LogError($"Слотов меньше, чем указанное максимальное количество предметов!");
         }
         posPointBegin = transformPointBegin.transform.position;
+        beginScale = objInventory.transform.localScale;
         inventory_Sound = GetComponent<Inventory_Sound>();
         inventory_UI = GetComponent<Inventory_UI>();
         inventory_UI.UpdateCount(inventoryItemsDIC.Count, maxItemsInInventory); //Обновляем UI отображение количества предметов
+        ActivatedInventory();
     }
 
-    private void OnValidate()
+    public void ActivatedInventory()
+    {
+        if (!GameManager.Instance.inventory_Start.isStartInventory) //Если кнопка старта инвентаря не запущена, то объект инвентаря неактивен
+        {
+            objInventory.SetActive(false);
+        }
+        else
+        {
+            objInventory.SetActive(true);
+        }
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate() //Защита от дурака (в том числе и от себя)
     {
         if (transformsSlots.Length < maxItemsInInventory)
         {
             Debug.LogError($"{transformsSlots} меньше, чем - максимально назначенное количество слотов! Создайте больше слотов!");
         }
     }
+#endif
 }

@@ -8,7 +8,14 @@ public class NextRoom : MonoBehaviour
     [SerializeField, Header("Вставьте объекты, которые нужно ДЕактивировать")]
     private GameObject[] deactivatedGO;
 
-
+    private void OnMouseDown()
+    {
+        if (gameObject.tag == "NextRoom")
+        {
+            Activated();
+            Deactivated();
+        }
+    }
 
     public void Deactivated()
     {

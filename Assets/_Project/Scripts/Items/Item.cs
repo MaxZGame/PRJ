@@ -63,19 +63,22 @@ public class Item : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (isInInventory)
+        if (GameManager.Instance.inventory_Start.isStartInventory)
         {
-            DragItemDown();
-        }
-        else
-        {
-            if (itemSO.IsInteractive)
+            if (isInInventory)
             {
-                objInteractive.SetActive(true);
+                DragItemDown();
             }
             else
             {
-                Inventory.Instance.AddItems(itemSO, gameObject);
+                if (itemSO.IsInteractive)
+                {
+                    objInteractive.SetActive(true);
+                }
+                else
+                {
+                    Inventory.Instance.AddItems(itemSO, gameObject);
+                }
             }
         }
     }

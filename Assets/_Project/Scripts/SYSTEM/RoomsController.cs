@@ -6,8 +6,20 @@ public class RoomsController : MonoBehaviour
     private GameObject startRoom;
 
 
+    public static RoomsController Instance;
+
     //Флажки
     private bool isFirstStart = true;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public bool IsFirstStart()
+    {
+        return isFirstStart;
+    }
 
     public void FirstStart()
     {

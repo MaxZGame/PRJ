@@ -2,20 +2,23 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private RoomsController roomsController;
+    public static GameManager Instance;
+
+    [field: SerializeField, Header("Кнопка запуска инвентаря")]
+    public Inventory_Start inventory_Start { get; private set; }
+
+    [SerializeField, Header("Вставить сюда скрипт инвентаря")]
+    private Inventory inventory;
 
     private void Awake()
     {
-        Init();
+        Instance = this;
+        inventory.Init();
     }
 
     private void Start()
     {
-        roomsController.FirstStart();
-    }
-
-    private void Init()
-    {
-        roomsController = GetComponent<RoomsController>();
+        StoryManager.Instance.Message();
+        RoomsController.Instance.FirstStart();
     }
 }
