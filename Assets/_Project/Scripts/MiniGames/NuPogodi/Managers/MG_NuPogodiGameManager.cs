@@ -1,5 +1,5 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MG_NuPogodiGameManager : MonoBehaviour
 {
@@ -7,14 +7,16 @@ public class MG_NuPogodiGameManager : MonoBehaviour
     [field: SerializeField, Header("Вставить объект со скриптом волка")]
     public Wolf Wolf { get; private set; }
 
-    [SerializeField, Header("Сколько нужно собрать яиц для победы"), Range(1, 6)]
+    [SerializeField, Header("Вставить UIHealth")]
+    private UIHealth uIHealth;
+
+    [SerializeField, Header("Вставить ТМП счетчика яиц")]
+    private TextMeshProUGUI tmpCountEgg;
+
+    [SerializeField, Header("Сколько нужно собрать яиц для победы"), Range(1, 100)]
     private int doneEggCountWin = 6;
     private int doneEggCount;
 
-    [SerializeField, Header("Вставить префаб собранного яйца")]
-    private Image prefabDoneEgg;
-    [SerializeField, Header("Вставить панель, где появляются собранные яйца")]
-    private Transform panelDoneEgg;
 
     [SerializeField, Header("Вставить кнопку =назад=")]
     private MGNuPogodiButtonBack buttonBack;
@@ -43,16 +45,9 @@ public class MG_NuPogodiGameManager : MonoBehaviour
     public void NewGame()
     {
         Wolf.NewWolf();
-        UIHealth.Instance.NewHealth();
+        uIHealth.NewHealth();
         doneEggCount = 0;
-        Image[] doneEggs = panelDoneEgg.GetComponentsInChildren<Image>();
-        foreach (Image image in doneEggs)
-        {
-            if (image.gameObject.tag != "UIPanel")
-            {
-                Destroy(image.gameObject);
-            }
-        }
+        tmpCountEgg.text = $"{doneEggCount}/{doneEggCountWin}";
     }
 
     public void CollectEgg()
@@ -60,20 +55,12 @@ public class MG_NuPogodiGameManager : MonoBehaviour
         if (doneEggCount < doneEggCountWin - 1)
         {
             doneEggCount += 1;
-            Instantiate(prefabDoneEgg, panelDoneEgg);
+            tmpCountEgg.text = $"{doneEggCount}/{doneEggCountWin}";
         }
         else // В случае победы
         {
             SFX_Main.Instance.PlayAudio("WinGame"); //Звук победы
             doneEggCount = 0;
-            Image[] doneEggs = panelDoneEgg.GetComponentsInChildren<Image>();
-            foreach (Image image in doneEggs)
-            {
-                if (image.gameObject.tag != "UIPanel")
-                {
-                    Destroy(image.gameObject);
-                }
-            }
             buttonBack.Back();
             Destroy(gameObject);
             Destroy(goActivatedMG);
