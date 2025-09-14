@@ -84,7 +84,6 @@ public class Inventory : MonoBehaviour
 
             //Добавляем слот предмету
             posItemsDIC[itemSO.NameItem] = posSlots[itemScript.IndexItem];
-            Debug.Log($"[Inventory,AddItems] Индекс предмета в инвентаре {itemScript.IndexItem}");
 
             if (activatedInventoryButton.IsActivated)
             {
@@ -125,7 +124,6 @@ public class Inventory : MonoBehaviour
         posItemsDIC.Remove(itemSO.NameItem);
 
         inventory_UI.UpdateCount(inventoryItemsDIC.Count, maxItemsInInventory); //Обновляем UI отображение количества предметов
-        Debug.Log($"[Inventory,RemoveIitems] Индекс предмета в инвентаре {itemScript.IndexItem}");
     }
 
     public void OnEnableInventory()
