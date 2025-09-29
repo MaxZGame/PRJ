@@ -8,6 +8,8 @@ public class NextRoom : MonoBehaviour
     [SerializeField, Header("Вставьте объекты, которые нужно ДЕактивировать")]
     private GameObject[] deactivatedGO;
 
+    private bool lockButton = false;
+
     private void OnMouseDown()
     {
         if (gameObject.tag == "NextRoom")
@@ -17,29 +19,41 @@ public class NextRoom : MonoBehaviour
         }
     }
 
+    public void Locker(bool set)
+    {
+        lockButton = set;
+    }
+
     public void Deactivated()
     {
-        if (deactivatedGO != null & deactivatedGO.Length > 0)
+        if (!lockButton)
         {
-            foreach (GameObject go in deactivatedGO)
+            if (deactivatedGO != null & deactivatedGO.Length > 0)
             {
-                go?.SetActive(false);
+                foreach (GameObject go in deactivatedGO)
+                {
+                    go?.SetActive(false);
+                }
             }
+            Inventory.Instance.isNextRoomStep = true;
+            Inventory.Instance.OnDisableInventory();
+            Inventory.Instance.isNextRoomStep = false;
         }
-        Inventory.Instance.isNextRoomStep = true;
-        Inventory.Instance.OnDisableInventory();
-        Inventory.Instance.isNextRoomStep = false;
     }
 
     public void Activated()
     {
-        SFX_Main.Instance.PlayAudio("Select"); //Звук при нажатии на эту клавишу
-        if (activatedGO != null && activatedGO.Length > 0)
+        if (!lockButton)
         {
-            foreach (GameObject go in activatedGO)
+            SFX_Main.Instance.PlayAudio("Select"); //Звук при нажатии на эту клавишу
+            if (activatedGO != null && activatedGO.Length > 0)
             {
-                go?.SetActive(true);
+                foreach (GameObject go in activatedGO)
+                {
+                    go?.SetActive(true);
+                }
             }
+            RoomsController.Instance.RoomCurrentUpdate();
         }
     }
 }

@@ -8,11 +8,10 @@ public class Inventory : MonoBehaviour
     public static Inventory Instance;
 
     //Основное хранилище предметов
-    private Dictionary<string, GameObject> inventoryItemsDIC = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> inventoryItemsDIC = new Dictionary<string, GameObject>();
 
     //Хранилище позиций для предметов
     private Dictionary<string, Vector2> posItemsDIC = new Dictionary<string, Vector2>();
-
 
     [SerializeField, Header("Вставьте объекты позиций слотов")]
     private Transform[] transformsSlots;
@@ -37,7 +36,6 @@ public class Inventory : MonoBehaviour
 
     //Объект, который будет родительским при удалении из инвентаря
     private GameObject oldParentItems;
-
 
     [SerializeField, Header("Вставьте объект визуала инвентаря")]
     private GameObject objInventory;
@@ -75,7 +73,6 @@ public class Inventory : MonoBehaviour
             Item itemScript = objItem.GetComponent<Item>(); //Инициализируем скрипт предмета
 
             inventoryItemsDIC[itemSO.NameItem] = objItem; // Добавляем в хранилище
-
             CompareNameItem(itemScript);    //Проверяем совпадение имен
 
             int index = GetFreeIndex(); //Присваиваем индекс
@@ -128,10 +125,10 @@ public class Inventory : MonoBehaviour
 
     public void OnEnableInventory()
     {
-        //Меняем размер инвентаря
-        objInventory.transform.position = posPointBegin;
+        
+        objInventory.transform.position = posPointBegin; //Ставим на позицию
         RectTransform rectTransform = objInventory.GetComponent<RectTransform>();
-        rectTransform.localScale = new Vector3(scaleInventoryOpen, scaleInventoryOpen, scaleInventoryOpen);
+        rectTransform.localScale = new Vector3(scaleInventoryOpen, scaleInventoryOpen, scaleInventoryOpen);//Меняем размер инвентаря
         //Закончили
 
         foreach (var kvp in inventoryItemsDIC)

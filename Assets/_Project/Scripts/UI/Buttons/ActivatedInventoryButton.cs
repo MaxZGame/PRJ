@@ -6,7 +6,8 @@ public class ActivatedInventoryButton : MonoBehaviour
 
     public bool IsActivated { get; private set; }
 
-    private List<GameObject> deactiveObj = new List<GameObject>(); //Массив объектов, которые мы деактивировали 
+    private List<NextRoom> deactiveNextRoom = new List<NextRoom>(); //Массив некструмов, которые мы блокируем
+    private List<ItemVisual> deactiveitemVisuals = new List<ItemVisual>();//Массив itemVisual, которые мы блокируем
 
     public void Activated()
     {
@@ -34,19 +35,26 @@ public class ActivatedInventoryButton : MonoBehaviour
 
         if (active)
         {
-            foreach (GameObject obj in deactiveObj)
+            foreach (NextRoom nextRoom in deactiveNextRoom)
             {
-                obj.SetActive(true);
+                nextRoom.Locker(false);
             }
-            deactiveObj.Clear();
+            foreach (ItemVisual itemVisual in deactiveitemVisuals)
+            {
+                itemVisual.Locker(false);
+            }
+            deactiveNextRoom.Clear();
+            deactiveitemVisuals.Clear();
         }
         else
         {
             foreach (NextRoom nextRoom in nextRoomsDeactivated)  // Отключаем объекты переходов в другие комнаты
             {
-                GameObject obj = nextRoom.gameObject;
-                deactiveObj.Add(obj);
-                obj.SetActive(false);
+                deactiveNextRoom.Add(nextRoom);
+                ItemVisual itemVisual = nextRoom.gameObject.GetComponent<ItemVisual>();
+                itemVisual.Locker(true);
+                deactiveitemVisuals.Add(itemVisual);
+                nextRoom.Locker(true);
             }
         }
 

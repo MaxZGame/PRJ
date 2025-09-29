@@ -81,6 +81,10 @@ public class Item : MonoBehaviour
                 }
             }
         }
+        if (itemSO.IsInteractive)
+        {
+            objInteractive.SetActive(true);
+        }
     }
 
 
